@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,12 @@ namespace TodoApi.Controllers
     public class TodoController : Controller
     {
         private readonly TodoContext _context;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public TodoController(TodoContext context)
+        public TodoController(TodoContext context, IHttpClientFactory clientFactory)
         {
             _context = context;
+            _clientFactory = clientFactory;
 
             if (_context.TodoItems.Count() == 0)
             {
@@ -27,6 +30,30 @@ namespace TodoApi.Controllers
                 _context.TodoItems.Add(new TodoItem { Name = "Item1" });
                 _context.SaveChanges();
             }
+        }
+
+        // GET: api/items
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TodoItem>>> GetItems()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get,"http://jplsjpls-testjp.apps.us-east-2.online-starter.openshift.com/api/todo");
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+
+            var itens = new List<TodoItem>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                itens = await response.Content
+                    .ReadAsAsync<List<TodoItem>>();
+            }
+            else
+            {
+                itens = new List<TodoItem>();
+            }
+
+            return itens;
+
         }
 
         // GET: api/Todo
