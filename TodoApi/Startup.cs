@@ -30,6 +30,7 @@ namespace TodoApi
         {
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddHttpClient();
 
             services.AddSwaggerGen(c =>
             {

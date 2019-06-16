@@ -33,7 +33,7 @@ namespace TodoApi.Controllers
         }
 
         // GET: api/items
-        [HttpGet]
+        [HttpGet("items")]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetItems()
         {
             var request = new HttpRequestMessage(HttpMethod.Get,"http://jplsjpls-testjp.apps.us-east-2.online-starter.openshift.com/api/todo");
